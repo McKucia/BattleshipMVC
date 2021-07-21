@@ -1,4 +1,4 @@
-﻿@model BattleshipMVC.Models.Player
+﻿@model List<BattleshipMVC.Models.Player>
 @{
     ViewBag.Title = "Game";
     string color = "dimgray";
@@ -7,48 +7,87 @@
 <table style="float:left; margin-right: 20px;">
     @for (int row = 0; row < 10; row++)
     {
-    <tr>
-        @for (int column = 0; column < 10; column++)
-        {
-            <th>
-            @switch (Model.Board.PanelAt(row, column).State)
+        <tr>
+            @for (int column = 0; column < 10; column++)
             {
-                case BattleshipMVC.Models.FieldState.AircraftCarrier:
-                    color = "black";
-                    break;
-                case BattleshipMVC.Models.FieldState.Cruiser:
-                    color = "green";
-                    break;
-                case BattleshipMVC.Models.FieldState.Destroyer:
-                    color = "yellow";
-                    break;
-                case BattleshipMVC.Models.FieldState.Frigate:
-                    color = "blue";
-                    break;
-                case BattleshipMVC.Models.FieldState.Submarine:
-                    color = "red";
-                    break;
-                default:
-                    color = "dimgray";
-                    break;
+                <th>
+                    @switch (Model[0].Board.PanelAt(row, column).State)
+                    {
+                        case BattleshipMVC.Models.FieldState.AircraftCarrier:
+                            color = "black";
+                            break;
+                        case BattleshipMVC.Models.FieldState.Cruiser:
+                            color = "green";
+                            break;
+                        case BattleshipMVC.Models.FieldState.Destroyer:
+                            color = "yellow";
+                            break;
+                        case BattleshipMVC.Models.FieldState.Frigate:
+                            color = "blue";
+                            break;
+                        case BattleshipMVC.Models.FieldState.Submarine:
+                            color = "red";
+                            break;
+                        case BattleshipMVC.Models.FieldState.Hit:
+                            color = "brown";
+                            break;
+                        case BattleshipMVC.Models.FieldState.Miss:
+                            color = "crimson";
+                            break;
+                        default:
+                            color = "dimgray";
+                            break;
+                    }
+                    <button style="background-color: @color" class="tile"></button>
+                </th>
             }
-                <button style="background-color: @color" class="tile"></button>
-            </th>
-        }
-    </tr>
+        </tr>
     }
 </table>
 
-<table>
+<table style="float:left; margin-right: 20px;">
     @for (int row = 0; row < 10; row++)
     {
         <tr>
             @for (int column = 0; column < 10; column++)
             {
                 <th>
-                    <button style="background-color: dimgray" class="tile"></button>
+                    @switch (Model[1].Board.PanelAt(row, column).State)
+                    {
+                        case BattleshipMVC.Models.FieldState.Hit:
+                            color = "brown";
+                            break;
+                        case BattleshipMVC.Models.FieldState.Miss:
+                            color = "crimson";
+                            break;
+                        default:
+                            color = "dimgray";
+                            break;
+                    }
+                    <button onclick="Fire(@row, @column)" style="background-color: @color" class="tile"></button>
                 </th>
             }
         </tr>
     }
 </table>
+
+@section scripts {
+    <script type="text/javascript">
+
+        function Fire(row, column){
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Fire", "Game")',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    row: row,
+                    column: column
+                }),
+                success: function (response) {
+                    location.reload()
+                }
+            })
+        }
+
+    </script>
+}
