@@ -1,0 +1,123 @@
+﻿
+@{
+    ViewBag.Title = "Choose Positions";
+}
+
+<table id="Board">
+    @for (int row = 0; row < 10; row++)
+    {
+        <tr>
+            @for (int column = 0; column < 10; column++)
+            {
+                <th>
+                    <button onclick="AddToBoard(@row, @column)" class="tile"></button>
+                </th>
+            }
+        </tr>
+    }
+</table>
+<h2 id="Choose"></h2>
+@Html.ActionLink("Graj", "PlayGame", null, new { @Id = "Play", @style= "visibility: hidden;" })
+
+@section scripts {
+    <script type="text/javascript">
+        var title = document.getElementById("Choose");
+        title.innerHTML = "Wybierz pozycję dla Aircraft";
+        var board = document.getElementById("Board");
+
+        var shipCounter = 1;
+        var direction = "right";
+
+        var matrix = new Array(10);
+        for (var i = 0; i < 10; i++)
+            matrix[i] = new Array(10);
+
+        document.addEventListener('keydown', (event) => {
+            const keyName = event.key;
+
+            if (keyName == 'w')
+                direction = "up";
+            if (keyName == 's')
+                direction = "down";
+            if (keyName == 'a')
+                direction = "left";
+            if (keyName == 'd')
+                direction = "right";
+        })
+
+        function AddToBoard(row, column) {
+            if (direction == "right")
+                for (var i = 0; i < shipCounter; i++)
+                    matrix[row][column + i] = shipCounter.toString();
+            else if (direction == "left")
+                for (var i = 0; i < shipCounter; i++)
+                    matrix[row][column - i] = shipCounter.toString();
+            else if (direction == "up")
+                for (var i = 0; i < shipCounter; i++)
+                    matrix[row - i][column] = shipCounter.toString();
+            else if (direction == "down")
+                for (var i = 0; i < shipCounter; i++)
+                    matrix[row + i][column] = shipCounter.toString();
+
+            shipCounter++;
+            Update();
+        }
+
+        function Update() {
+
+            switch (shipCounter) {
+                case 1:
+                    title.innerHTML = "Wybierz pozycję dla AircraftCarrier";
+                    break;
+                case 2:
+                    title.innerHTML = "Wybierz pozycję dla Destroyer";
+                    break;
+                case 3:
+                    title.innerHTML = "Wybierz pozycję dla Cruiser";
+                    break;
+                case 4:
+                    title.innerHTML = "Wybierz pozycję dla Frigate";
+                    break;
+                case 5:
+                    title.innerHTML = "Wybierz pozycję dla Submarine";
+                    break;
+                case 6:
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("ParseCoordinates", "Game")',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({
+                            coordinates: matrix
+                        }),
+                        success: function () {
+                            document.getElementById("Play").style.visibility = "visible";
+                        }
+                    })
+            }
+
+            for (var row = 0; row < 10; row++) {
+                for (var column = 0; column < 10; column++) {
+                    var tr = board.getElementsByTagName("tr")[row];
+                    var th = tr.getElementsByTagName("th")[column];
+                    var tile = th.getElementsByTagName("button")[0];
+
+                    if (matrix[row][column] == "1")
+                        tile.style.backgroundColor = "red";
+
+                    if (matrix[row][column] == "2")
+                        tile.style.backgroundColor = "blue";
+
+                    if (matrix[row][column] == "3")
+                        tile.style.backgroundColor = "green";
+
+                    if (matrix[row][column] == "4")
+                        tile.style.backgroundColor = "yellow";
+
+                    if (matrix[row][column] == "5")
+                        tile.style.backgroundColor = "black";
+                }
+            }
+        }
+
+    </script>
+}

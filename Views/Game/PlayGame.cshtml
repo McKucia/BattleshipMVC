@@ -1,0 +1,54 @@
+﻿@model BattleshipMVC.Models.Player
+@{
+    ViewBag.Title = "Game";
+    string color = "dimgray";
+}
+
+<table style="float:left; margin-right: 20px;">
+    @for (int row = 0; row < 10; row++)
+    {
+    <tr>
+        @for (int column = 0; column < 10; column++)
+        {
+            <th>
+            @switch (Model.Board.PanelAt(row, column).State)
+            {
+                case BattleshipMVC.Models.FieldState.AircraftCarrier:
+                    color = "black";
+                    break;
+                case BattleshipMVC.Models.FieldState.Cruiser:
+                    color = "green";
+                    break;
+                case BattleshipMVC.Models.FieldState.Destroyer:
+                    color = "yellow";
+                    break;
+                case BattleshipMVC.Models.FieldState.Frigate:
+                    color = "blue";
+                    break;
+                case BattleshipMVC.Models.FieldState.Submarine:
+                    color = "red";
+                    break;
+                default:
+                    color = "dimgray";
+                    break;
+            }
+                <button style="background-color: @color" class="tile"></button>
+            </th>
+        }
+    </tr>
+    }
+</table>
+
+<table>
+    @for (int row = 0; row < 10; row++)
+    {
+        <tr>
+            @for (int column = 0; column < 10; column++)
+            {
+                <th>
+                    <button style="background-color: dimgray" class="tile"></button>
+                </th>
+            }
+        </tr>
+    }
+</table>
