@@ -16,9 +16,4 @@ namespace BattleshipMVC.Models
         Miss = 10,
         Hit = 11
     }
-
-    public enum Shot
-    {
-        Miss, Hit
-    }
 }

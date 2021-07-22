@@ -16,7 +16,7 @@
         </tr>
     }
 </table>
-<h2 id="Choose"></h2>
+<h2 id="Choose" style="color: white;"></h2>
 @Html.ActionLink("Graj", "PlayGame", null, new { @Id = "Play", @style= "visibility: hidden;" })
 
 @section scripts {
@@ -102,19 +102,19 @@
                     var tile = th.getElementsByTagName("button")[0];
 
                     if (matrix[row][column] == "1")
-                        tile.style.backgroundColor = "red";
+                        tile.style.backgroundColor = "var(--violet3)";
 
                     if (matrix[row][column] == "2")
-                        tile.style.backgroundColor = "blue";
+                        tile.style.backgroundColor = "var(--violet2)";
 
                     if (matrix[row][column] == "3")
-                        tile.style.backgroundColor = "green";
+                        tile.style.backgroundColor = "var(--violet1)";
 
                     if (matrix[row][column] == "4")
-                        tile.style.backgroundColor = "yellow";
+                        tile.style.backgroundColor = "var(--gray)";
 
                     if (matrix[row][column] == "5")
-                        tile.style.backgroundColor = "black";
+                        tile.style.backgroundColor = "var(--black)";
                 }
             }
         }

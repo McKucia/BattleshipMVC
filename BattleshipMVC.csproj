@@ -126,7 +126,6 @@
     </Compile>
     <Compile Include="Models\Board.cs" />
     <Compile Include="Models\Enums.cs" />
-    <Compile Include="Models\Game.cs" />
     <Compile Include="Models\Panel.cs" />
     <Compile Include="Models\Player.cs" />
     <Compile Include="Models\Position.cs" />

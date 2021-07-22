@@ -4,72 +4,92 @@
     string color = "dimgray";
 }
 
-<table style="float:left; margin-right: 20px;">
-    @for (int row = 0; row < 10; row++)
-    {
-        <tr>
-            @for (int column = 0; column < 10; column++)
+<div id="popup" class="popup">
+    <h3></h3>
+    <button onclick='window.location = "@Url.Action("Index", "Game")";'
+            class="button"
+            style="background-color: var(--gray)">
+        Jeszcze raz?
+    </button>
+</div>
+<div id="board-container">
+    <div>
+        <h2 style="color: white">@Model[0].Name</h2>
+        <table style="margin-right: 20px;">
+            @for (int row = 0; row < 10; row++)
             {
-                <th>
-                    @switch (Model[0].Board.PanelAt(row, column).State)
+                <tr>
+                    @for (int column = 0; column < 10; column++)
                     {
-                        case BattleshipMVC.Models.FieldState.AircraftCarrier:
-                            color = "black";
-                            break;
-                        case BattleshipMVC.Models.FieldState.Cruiser:
-                            color = "green";
-                            break;
-                        case BattleshipMVC.Models.FieldState.Destroyer:
-                            color = "yellow";
-                            break;
-                        case BattleshipMVC.Models.FieldState.Frigate:
-                            color = "blue";
-                            break;
-                        case BattleshipMVC.Models.FieldState.Submarine:
-                            color = "red";
-                            break;
-                        case BattleshipMVC.Models.FieldState.Hit:
-                            color = "brown";
-                            break;
-                        case BattleshipMVC.Models.FieldState.Miss:
-                            color = "crimson";
-                            break;
-                        default:
-                            color = "dimgray";
-                            break;
+                        <th>
+                            @switch (Model[0].Board.PanelAt(row, column).State)
+                            {
+                                case BattleshipMVC.Models.FieldState.Hit:
+                                    color = "var(--violet2)";
+                                    break;
+                                case BattleshipMVC.Models.FieldState.Miss:
+                                    color = "var(--gray)";
+                                    break;
+                                case BattleshipMVC.Models.FieldState.Empty:
+                                    color = "white";
+                                    break;
+                                default:
+                                    color = "var(--violet1)";
+                                    break;
+                            }
+                            <button style="background-color: @color" class="tile"></button>
+                        </th>
                     }
-                    <button style="background-color: @color" class="tile"></button>
-                </th>
+                </tr>
             }
-        </tr>
-    }
-</table>
+        </table>
+    </div>
 
-<table style="float:left; margin-right: 20px;">
-    @for (int row = 0; row < 10; row++)
-    {
-        <tr>
-            @for (int column = 0; column < 10; column++)
+    <div>
+        <h2 style="color: white">@Model[1].Name</h2>
+        <table>
+            @for (int row = 0; row < 10; row++)
             {
-                <th>
-                    @switch (Model[1].Board.PanelAt(row, column).State)
+                <tr>
+                    @for (int column = 0; column < 10; column++)
                     {
-                        case BattleshipMVC.Models.FieldState.Hit:
-                            color = "brown";
-                            break;
-                        case BattleshipMVC.Models.FieldState.Miss:
-                            color = "crimson";
-                            break;
-                        default:
-                            color = "dimgray";
-                            break;
+                        <th>
+                            @switch (Model[1].Board.PanelAt(row, column).State)
+                            {
+                                case BattleshipMVC.Models.FieldState.AircraftCarrier:
+                                    color = "yellow";
+                                    break;
+                                case BattleshipMVC.Models.FieldState.Submarine:
+                                    color = "yellow";
+                                    break;
+                                case BattleshipMVC.Models.FieldState.Cruiser:
+                                    color = "yellow";
+                                    break;
+                                case BattleshipMVC.Models.FieldState.Frigate:
+                                    color = "yellow";
+                                    break;
+                                case BattleshipMVC.Models.FieldState.Destroyer:
+                                    color = "yellow";
+                                    break;
+
+                                case BattleshipMVC.Models.FieldState.Hit:
+                                    color = "var(--violet2)";
+                                    break;
+                                case BattleshipMVC.Models.FieldState.Miss:
+                                    color = "var(--gray)";
+                                    break;
+                                default:
+                                    color = "white";
+                                    break;
+                            }
+                            <button onclick="Fire(@row, @column)" style="background-color: @color" class="tile"></button>
+                        </th>
                     }
-                    <button onclick="Fire(@row, @column)" style="background-color: @color" class="tile"></button>
-                </th>
+                </tr>
             }
-        </tr>
-    }
-</table>
+        </table>
+    </div>
+</div>
 
 @section scripts {
     <script type="text/javascript">
@@ -84,7 +104,14 @@
                     column: column
                 }),
                 success: function (response) {
-                    location.reload()
+                    if (response.winner != null) {
+                        var popup = document.getElementById("popup");
+                        popup.childNodes[0].textContent = response.winner;
+                        popup.style.visibility = "visible";
+                    }
+                    else {
+                        location.reload();
+                    }
                 }
             })
         }
