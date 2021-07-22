@@ -56,22 +56,6 @@
                         <th>
                             @switch (Model[1].Board.PanelAt(row, column).State)
                             {
-                                case BattleshipMVC.Models.FieldState.AircraftCarrier:
-                                    color = "yellow";
-                                    break;
-                                case BattleshipMVC.Models.FieldState.Submarine:
-                                    color = "yellow";
-                                    break;
-                                case BattleshipMVC.Models.FieldState.Cruiser:
-                                    color = "yellow";
-                                    break;
-                                case BattleshipMVC.Models.FieldState.Frigate:
-                                    color = "yellow";
-                                    break;
-                                case BattleshipMVC.Models.FieldState.Destroyer:
-                                    color = "yellow";
-                                    break;
-
                                 case BattleshipMVC.Models.FieldState.Hit:
                                     color = "var(--violet2)";
                                     break;
