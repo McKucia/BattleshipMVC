@@ -16,6 +16,6 @@ and the objective of the game is to destroy the opposing player's fleet.
 ### To do in the future
 * Avoid positioning the boat off the board
 * Avoid "overlapping" the boat
-* Upgrade bot
-* Change appearance
 * Add a color legend
+* Make field unclicaple after click
+* Prevent page reload
