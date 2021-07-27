@@ -16,7 +16,9 @@ namespace BattleshipMVC.Models
 
         public Panel PanelAt(int row, int column)
         {
-            return Panels.Where(p => p.Position.Row == row && p.Position.Column == column).SingleOrDefault();
+            return Panels
+                .Where(p => p.Position.Row == row && p.Position.Column == column)
+                .SingleOrDefault();
         }
 
     }

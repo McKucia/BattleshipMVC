@@ -3,6 +3,7 @@
     ViewBag.Title = "Choose Positions";
 }
 
+<h1 id="arrow" style="color: white;">Naciśnij W,A,S,D</h1>
 <table id="Board">
     @for (int row = 0; row < 10; row++)
     {
@@ -17,7 +18,7 @@
     }
 </table>
 <h2 id="Choose" style="color: white;"></h2>
-@Html.ActionLink("Graj", "PlayGame", null, new { @Id = "Play", @style= "visibility: hidden;" })
+@Html.ActionLink("Graj", "PlayGame", null, new { @Id = "Play", @style = "visibility: hidden;" })
 
 @section scripts {
     <script type="text/javascript">
@@ -34,15 +35,26 @@
 
         document.addEventListener('keydown', (event) => {
             const keyName = event.key;
+            var arrow = document.getElementById("arrow");
 
-            if (keyName == 'w')
+            if (keyName == 'w') {
                 direction = "up";
-            if (keyName == 's')
+                arrow.innerHTML = "&#8593";
+            }
+            if (keyName == 's') {
                 direction = "down";
-            if (keyName == 'a')
+                arrow.innerHTML = "&#8595;";
+            }
+            if (keyName == 'a') {
                 direction = "left";
-            if (keyName == 'd')
+                arrow.innerHTML = "&#8592";
+            }
+                
+            if (keyName == 'd') {
                 direction = "right";
+                arrow.innerHTML = "&#8594";
+            }
+                
         })
 
         function AddToBoard(row, column) {

@@ -3,9 +3,9 @@
     ViewBag.Title = "Index";
 }
 
-@using(Html.BeginForm("NewGame", "Game", FormMethod.Post))
+@using (Html.BeginForm("NewGame", "Game", FormMethod.Post))
 {
     <h2 style="color: white;">Podaj swoje imię:</h2>
     @Html.TextBoxFor(p => p.Name, new { @class = "text-box", autocomplete = "off" })
-    <input type="submit" value="Graj!" class="button"/>
+    <input type="submit" value="Graj!" class="button" />
 }

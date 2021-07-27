@@ -54,21 +54,20 @@ namespace BattleshipMVC.Controllers
 
         public ActionResult Fire(int row, int column)
         {
-            //strzał gracza
-            //trafiony
-            var pa = _bot.Board.PanelAt(row, column).State;
+            //player's shot
+            //hit
             if (_bot.Board.PanelAt(row, column).IsOccupied)
             {
-                //zwiększamy licznik hitów na konkretnym statku
-                var ship = _bot.Ships
-                    .First(s => s.State == _bot.Board.PanelAt(row, column).State);
+                //increase the hit counter on a specific ship
+                var ship = _bot.Ships.First(s => s.State == _bot.Board.PanelAt(row, column).State);
                 ship.Hits++;
 
                 if (ship.Hits == ship.Size)
                     _bot.Ships.Remove(ship);
-                    _bot.Board.PanelAt(row, column).State = FieldState.Hit;
+
+                _bot.Board.PanelAt(row, column).State = FieldState.Hit;
             }
-            //nietrafiony
+            //miss
             else
                 _bot.Board.PanelAt(row, column).State = FieldState.Miss;
 
@@ -79,31 +78,27 @@ namespace BattleshipMVC.Controllers
             else
                 coords = RandomShot();
 
-            //strzał bota
-            var paa = _player.Board.PanelAt(coords.Row, coords.Column).State;
+            //bot's shot
             if (_player.Board.PanelAt(coords.Row, coords.Column).IsOccupied)
             {
-                //zwiększamy licznik hitów na konkretnym statku
-                var ship = _player.Ships
-                    .First(s => s.State == _player.Board.PanelAt(coords.Row, coords.Column).State);
+                //increase the hit counter on a specific ship
+                var ship = _player.Ships.First(s => s.State == _player.Board.PanelAt(coords.Row, coords.Column).State);
                 ship.Hits++;
 
                 if (ship.Hits == ship.Size)
                     _player.Ships.Remove(ship);
-                    _player.Board.PanelAt(coords.Row, coords.Column).State = FieldState.Hit;
+
+                _player.Board.PanelAt(coords.Row, coords.Column).State = FieldState.Hit;
             }
             else
                 _player.Board.PanelAt(coords.Row, coords.Column).State = FieldState.Miss;
 
             string winner = null;
             if (!_player.Ships.Any())
-            {
                 winner = "Bot";
-            }
+
             if (!_bot.Ships.Any())
-            {
                 winner = _player.Name;
-            }
 
             var players = new List<Player>() { _player, _bot };
             return Json(new { winner = winner });
@@ -111,7 +106,7 @@ namespace BattleshipMVC.Controllers
 
         private List<Panel> GetNeighbors(Position position)
         {
-            //zwraca sąsiadów kafelka
+            //returns the tile's neighbors
             return new List<Panel>
             {
                 _player.Board.PanelAt(position.Row - 1, position.Column),
@@ -124,14 +119,14 @@ namespace BattleshipMVC.Controllers
         private List<Position> GetHitNeighbors()
         {
             List<Panel> panels = new List<Panel>();
-            //wszystkie trafne strzały bota
+            //all bot's hits
             var hits = _player.Board.Panels.Where(x => x.State == FieldState.Hit).ToList();
 
-            //sąsiednie kafelki trafnych strzałów bota
+            //adjacent tiles to hits
             foreach (var hit in hits)
                 panels.AddRange(GetNeighbors(hit.Position).ToList());
-            
-            //wykluczamy kafelki w które bot już celował
+
+            //exclude tiles that the bot has already hit
             return panels.Distinct()
                          .Where(x => x.State != FieldState.Miss && x.State != FieldState.Hit)
                          .Select(x => x.Position)
@@ -140,13 +135,14 @@ namespace BattleshipMVC.Controllers
 
         private Position RandomShot()
         {
-            var availablePanels = _player.Board.Panels.Where(x => x.State != FieldState.Hit 
-            && x.State != FieldState.Miss)
+            var availablePanels = _player.Board.Panels
+                .Where(x => x.State != FieldState.Hit && x.State != FieldState.Miss)
                 .Select(x => x.Position)
                 .ToList();
 
             Random rand = new Random(Guid.NewGuid().GetHashCode());
             var panelID = rand.Next(availablePanels.Count);
+
             return availablePanels[panelID];
         }
 
@@ -155,10 +151,11 @@ namespace BattleshipMVC.Controllers
             Random rand = new Random(Guid.NewGuid().GetHashCode());
             var hitNeighbors = GetHitNeighbors();
             var neighborID = rand.Next(hitNeighbors.Count);
+
             return hitNeighbors[neighborID];
         }
 
-        //funckja losowo wybierająca pozycje statków dla bota
+        //function that randomly selects ship positions for the bot
         private void RandomBotCoordinates()
         {
             for (int i = 0; i < 10; i++)
@@ -175,31 +172,31 @@ namespace BattleshipMVC.Controllers
                 bool isOpen = true;
                 while (isOpen)
                 {
-                    var startcolumn = rand.Next(0, 10);
-                    var startrow = rand.Next(0, 10);
-                    int endrow = startrow, endcolumn = startcolumn;
+                    var startCol = rand.Next(0, 10);
+                    var startRow = rand.Next(0, 10);
+                    int endRow = startRow, endCol = startCol;
                     var orientation = rand.Next(1, 101) % 2;
 
                     List<int> panelNumbers = new List<int>();
 
                     if (orientation == 0)
                         for (int i = 1; i < ship.Size; i++)
-                            endrow++;
+                            endRow++;
                     else
                         for (int i = 1; i < ship.Size; i++)
-                            endcolumn++;
+                            endCol++;
 
-                    //Pomijamy pola poza planszą
-                    if (endrow > 9 || endcolumn > 9)
+                    //skip the fields outside of the board
+                    if (endRow > 9 || endCol > 9)
                     {
                         isOpen = true;
                         continue;
                     }
 
-                    var affectedPanels = _bot.Board.Panels.Where(x => x.Position.Row >= startrow
-                                 && x.Position.Column >= startcolumn
-                                 && x.Position.Row <= endrow
-                                 && x.Position.Column <= endcolumn).ToList();
+                    var affectedPanels = _bot.Board.Panels.Where(x => x.Position.Row >= startRow
+                                 && x.Position.Column >= startCol
+                                 && x.Position.Row <= endRow
+                                 && x.Position.Column <= endCol).ToList();
 
                     if (affectedPanels.Any(x => x.IsOccupied))
                     {

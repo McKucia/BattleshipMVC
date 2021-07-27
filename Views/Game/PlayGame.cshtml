@@ -12,6 +12,7 @@
         Jeszcze raz?
     </button>
 </div>
+
 <div id="board-container">
     <div>
         <h2 style="color: white">@Model[0].Name</h2>
@@ -90,7 +91,8 @@
                 success: function (response) {
                     if (response.winner != null) {
                         var popup = document.getElementById("popup");
-                        popup.childNodes[0].textContent = response.winner;
+                        //<h3> element
+                        popup.childNodes[0].textContent = "Wygrał " + response.winner;
                         popup.style.visibility = "visible";
                     }
                     else {
